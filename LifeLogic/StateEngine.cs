@@ -44,29 +44,16 @@ namespace LifeLogic
             // First, check to see if this cell is live or dead.
             bool living = state[row, column];
 
-            // Check all neighbors.  Look up, then down, then left, then right.
+            // Check all neighbors.  Look up, then upper-right, right, lower-right, so forth.
 
-            // The "wrapping" was something that was explored while trying to understand
-            // the example output.  In this case, if we look beyond the bounds of the array,
-            // we are just looking at the other side, rather than discounting those
-            // coordinates.  Note that the tests do not have any way of knowing whether
-            // wrapping is set to true, and will not account for that behavior.
-            const bool wrapping = false;
-            if (wrapping)
-            {
-                // Next, count neighbors.  Check cell above.
-                neighbors = WrappedCheckCell(state, row - 1, column, neighbors);
-                neighbors = WrappedCheckCell(state, row + 1, column, neighbors);
-                neighbors = WrappedCheckCell(state, row, column - 1, neighbors);
-                neighbors = WrappedCheckCell(state, row, column + 1, neighbors);
-            }
-            else
-            {
-                neighbors = CheckCell(state, row - 1, column, neighbors);
-                neighbors = CheckCell(state, row + 1, column, neighbors);
-                neighbors = CheckCell(state, row, column - 1, neighbors);
-                neighbors = CheckCell(state, row, column + 1, neighbors);
-            }
+            neighbors += CheckCell(state, row - 1, column);
+            neighbors += CheckCell(state, row - 1, column + 1);
+            neighbors += CheckCell(state, row, column + 1);
+            neighbors += CheckCell(state, row + 1, column + 1);
+            neighbors += CheckCell(state, row + 1, column);
+            neighbors += CheckCell(state, row + 1, column - 1);
+            neighbors += CheckCell(state, row, column - 1);
+            neighbors += CheckCell(state, row - 1, column - 1);
 
             if (living)
             {
@@ -86,42 +73,14 @@ namespace LifeLogic
             return false;
         }
 
-        private static int CheckCell(IState state, int y, int x, int count)
+        private static int CheckCell(IState state, int y, int x)
         {
             if (state.ValidateLocation(y, x) && state[y, x])
             {
-                count++;
+                return 1;
             }
 
-            return count;
-        }
-
-        private static int WrappedCheckCell(IState state, int y, int x, int count)
-        {
-            if (x < 0)
-            {
-                x = state.Width - 1;
-            }
-            else if (state.Width <= x)
-            {
-                x = 0;
-            }
-
-            if (y < 0)
-            {
-                y = state.Height - 1;
-            }
-            else if (state.Height <= y)
-            {
-                y = 0;
-            }
-
-            if (state[y, x])
-            {
-                count++;
-            }
-
-            return count;
+            return 0;
         }
     }
 }

@@ -370,7 +370,6 @@ namespace LifeLogicTest
         }
 
         [Test]
-        [Ignore("This test compares against the sample results, which don't appear to make sense.")]
         public void Ensure_sample_date_passes()
         {
             IState s0 = _container.GetInstance<IFactory>().CreateState(5, 5);
@@ -393,7 +392,7 @@ namespace LifeLogicTest
 
             Assert.True(s[1, 0]);
             Assert.False(s[1, 1]);
-            Assert.False(s[1, 2]);
+            Assert.True(s[1, 2]);
             Assert.True(s[1, 3]);
             Assert.True(s[1, 4]);
 
